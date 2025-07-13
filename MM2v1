@@ -1,0 +1,268 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "DropdownGUI"
+screenGui.ResetOnSpawn = false -- This prevents GUI from being destroyed on death
+screenGui.Parent = playerGui
+
+-- Main Frame (Container)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 250, 0, 50)
+mainFrame.Position = UDim2.new(0, 20, 0, 100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BorderSizePixel = 0
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = screenGui
+
+-- Add corner radius
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 12)
+mainCorner.Parent = mainFrame
+
+-- Header Frame
+local headerFrame = Instance.new("Frame")
+headerFrame.Name = "Header"
+headerFrame.Size = UDim2.new(1, 0, 0, 50)
+headerFrame.Position = UDim2.new(0, 0, 0, 0)
+headerFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+headerFrame.BorderSizePixel = 0
+headerFrame.Parent = mainFrame
+
+local headerCorner = Instance.new("UICorner")
+headerCorner.CornerRadius = UDim.new(0, 12)
+headerCorner.Parent = headerFrame
+
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, -50, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Fryzer Hub"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextScaled = true
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.Parent = headerFrame
+
+-- Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Name = "ToggleButton"
+toggleButton.Size = UDim2.new(0, 40, 0, 40)
+toggleButton.Position = UDim2.new(1, -45, 0, 5)
+toggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+toggleButton.BackgroundTransparency = 0
+toggleButton.BorderSizePixel = 0
+toggleButton.Text = "▼"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.TextScaled = true
+toggleButton.Font = Enum.Font.GothamBold
+toggleButton.Parent = headerFrame
+
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0, 8)
+toggleCorner.Parent = toggleButton
+
+-- Content Frame (for buttons)
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "Content"
+contentFrame.Size = UDim2.new(1, 0, 0, 280)
+contentFrame.Position = UDim2.new(0, 0, 0, 50)
+contentFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = mainFrame
+
+-- Welcome script executed flag
+local welcomeExecuted = false
+
+-- Function to run welcome script once
+local function runWelcomeScript()
+    if not welcomeExecuted then
+        welcomeExecuted = true
+        spawn(function()
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Notification-gui-custom-/refs/heads/main/Welcome%20gui"))()
+            end)
+        end)
+    end
+end
+
+-- Function to handle character respawn
+local function onCharacterAdded(character)
+    -- Wait for character to fully load
+    character:WaitForChild("Humanoid")
+    character:WaitForChild("HumanoidRootPart")
+    
+    -- Recreate GUI if it was destroyed
+    if not playerGui:FindFirstChild("DropdownGUI") then
+        wait(1) -- Small delay to ensure character is fully loaded
+        -- The GUI will be recreated by the main script below
+    end
+end
+
+-- Connect to character respawn
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Button configurations
+local buttonConfigs = {
+    {name = "ESP Player", color = Color3.fromRGB(50, 50, 50), action = function()
+        runWelcomeScript()
+        spawn(function()
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/esp%20player%20for%20(mm2)"))()
+            end)
+        end)
+    end},
+    {name = "Player TP GUI", color = Color3.fromRGB(45, 45, 45), action = function()
+        runWelcomeScript()
+        spawn(function()
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/Player%20tp%20gui%20role%20(mm2)"))()
+            end)
+        end)
+    end},
+    {name = "Coin Teleport", color = Color3.fromRGB(40, 40, 40), action = function()
+        runWelcomeScript()
+        spawn(function()
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/Coin%20teleport%20(mm2)"))()
+            end)
+        end)
+    end},
+    {name = "Player Controller", color = Color3.fromRGB(35, 35, 35), action = function()
+        runWelcomeScript()
+        spawn(function()
+            pcall(function()
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/Player%20controller%20(mm2)%20universal"))()
+            end)
+        end)
+    end},
+    {name = "Working", color = Color3.fromRGB(50, 50, 50), action = function()
+        runWelcomeScript()
+        print("Button 5: Working - No function assigned yet")
+    end},
+    {name = "Beta", color = Color3.fromRGB(45, 45, 45), action = function()
+        runWelcomeScript()
+        print("Button 6: Beta - No function assigned yet")
+    end},
+    {name = "Working", color = Color3.fromRGB(40, 40, 40), action = function()
+        runWelcomeScript()
+        print("Button 7: Working - No function assigned yet")
+    end}
+}
+
+-- Create buttons
+for i, config in ipairs(buttonConfigs) do
+    local button = Instance.new("TextButton")
+    button.Name = "Button" .. i
+    button.Size = UDim2.new(1, -20, 0, 35)
+    button.Position = UDim2.new(0, 10, 0, (i-1) * 40 + 5)
+    button.BackgroundColor3 = config.color
+    button.BorderSizePixel = 0
+    button.Text = config.name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
+    button.Font = Enum.Font.Gotham
+    button.Parent = contentFrame
+    
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 8)
+    buttonCorner.Parent = button
+    
+    -- Handle button click
+    button.MouseButton1Click:Connect(function()
+        -- Execute the button's action if it exists
+        if config.action then
+            local success, error = pcall(config.action)
+            if not success then
+                warn("Error executing action for " .. config.name .. ": " .. tostring(error))
+            end
+        end
+        
+        -- Visual feedback with better animation
+        local originalColor = button.BackgroundColor3
+        local tweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        
+        TweenService:Create(button, tweenInfo, {BackgroundColor3 = Color3.fromRGB(80, 80, 80)}):Play()
+        
+        wait(0.1)
+        
+        TweenService:Create(button, tweenInfo, {BackgroundColor3 = originalColor}):Play()
+    end)
+end
+
+-- Dropdown functionality
+local isOpen = false
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+local function toggleDropdown()
+    isOpen = not isOpen
+    
+    local targetSize, targetRotation
+    if isOpen then
+        targetSize = UDim2.new(0, 250, 0, 330)
+        targetRotation = 180
+    else
+        targetSize = UDim2.new(0, 250, 0, 50)
+        targetRotation = 0
+    end
+    
+    -- Animate main frame
+    local sizeTween = TweenService:Create(mainFrame, tweenInfo, {Size = targetSize})
+    sizeTween:Play()
+    
+    -- Animate toggle button rotation
+    local rotationTween = TweenService:Create(toggleButton, tweenInfo, {Rotation = targetRotation})
+    rotationTween:Play()
+end
+
+toggleButton.MouseButton1Click:Connect(toggleDropdown)
+
+-- Dragging functionality
+local dragToggle = nil
+local dragSpeed = 0
+local dragStart = nil
+local startPos = nil
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    TweenService:Create(mainFrame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+end
+
+headerFrame.InputBegan:Connect(function(input)
+    if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+        dragToggle = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragToggle = false
+            end
+        end)
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        if dragToggle then
+            updateInput(input)
+        end
+    end
+end)
+
+-- Mobile touch support for dragging
+headerFrame.TouchMoved:Connect(function(touch, gameProcessed)
+    if dragToggle then
+        updateInput(touch)
+    end
+end)
+
+print("Improved Dropdown GUI loaded successfully!")
