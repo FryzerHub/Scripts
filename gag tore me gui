@@ -1,0 +1,129 @@
+-- Load the Tora UI Library
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/liebertsx/Tora-Library/main/src/librarynew", true))()
+
+-- Create a main window
+local mainWindow = library:CreateWindow("Grow a garden")
+
+-- Create a folder (tab) inside the main window
+local folder = mainWindow:AddFolder("Main")
+
+-- Define teleport locations
+local locations = {
+    ["Event Area"] = Vector3.new(-119.69, 3.00, -14.97),
+    ["Gear Shop"] = Vector3.new(-285.27, 3.00, -13.62),
+    ["Pet Eggs Shop"] = Vector3.new(-287.34, 3.00, -0.91),
+    ["Cosmetics Shop"] = Vector3.new(-286.11, 3.00, -24.29),
+    ["Garden 1"] = Vector3.new(33.44, 3.00, 38.34),
+    ["Garden 2"] = Vector3.new(-100.65, 3.00, 38.08),
+    ["Garden 3"] = Vector3.new(-237.85, 3.00, 38.51),
+    ["Garden 4"] = Vector3.new(34.44, 3.00, -65.85),
+    ["Garden 5"] = Vector3.new(-98.96, 3.00, -65.37),
+    ["Garden 6"] = Vector3.new(-235.72, 3.00, -70.17)
+}
+
+-- Variable to store selected location
+local selectedLocation = "Event Area" -- Default selection
+
+-- Function to teleport player
+local function teleportPlayer(position)
+    local player = game.Players.LocalPlayer
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(position)
+        print("Teleported to:", selectedLocation)
+    else
+        print("Error: Player character not found")
+    end
+end
+
+-- Add dropdown for location selection
+folder:AddList({
+    text = "Select Location",
+    values = {"Event Area", "Gear Shop", "Pet Eggs Shop", "Cosmetics Shop", "Garden 1", "Garden 2", "Garden 3", "Garden 4", "Garden 5", "Garden 6"},
+    callback = function(value)
+        selectedLocation = value
+        print("Selected location:", value)
+    end,
+    open = false,
+    flag = "location_option"
+})
+
+-- Add teleport button
+folder:AddButton({
+    text = "Teleport",
+    flag = "teleport_button",
+    callback = function()
+        local position = locations[selectedLocation]
+        if position then
+            teleportPlayer(position)
+        else
+            print("Error: Location not found")
+        end
+    end
+})
+
+
+folder:AddButton({
+	text = "Server Hop",
+	flag = "serverhop",
+	callback = function()
+		local TeleportService = game:GetService("TeleportService")
+		local HttpService = game:GetService("HttpService")
+		local Servers = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+		local Server, Next = nil, nil
+		local function ListServers(cursor)
+		    local Raw = game:HttpGet(Servers .. ((cursor and "&cursor=" .. cursor) or ""))
+		    return HttpService:JSONDecode(Raw)
+		end
+		repeat
+		    local Servers = ListServers(Next)
+		    Server = Servers.data[math.random(1, (#Servers.data / 3))]
+		    Next = Servers.nextPageCursor
+		until Server
+		if Server.playing < Server.maxPlayers and Server.id ~= game.JobId then
+		    TeleportService:TeleportToPlaceInstance(game.PlaceId, Server.id, game.Players.LocalPlayer)
+		end
+	end
+})
+
+folder:AddButton({
+	text = "Rest player",
+	flag = "button",
+	callback = function() 
+	-- Reset Local Player
+local lp = game:GetService("Players").LocalPlayer
+local char = lp.Character or lp.CharacterAdded:Wait()
+local hum = char:FindFirstChildOfClass("Humanoid")
+if hum then
+    hum.Health = 0
+end
+
+end
+})
+
+folder:AddButton({
+	text = "Fruit Stealer",
+	flag = "button",
+	callback = function()
+		print("Loading script...")
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/steal%20fruit%20gui%20(gag)"))()
+	end
+})
+
+folder:AddButton({
+	text = "Free Sheckles",
+	flag = "button",
+	callback = function()
+		print("Loading script...")
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/ProGamerBoy610/Button-gui/refs/heads/main/get%20sheckles%20gui%20(gag)"))()
+	end
+})
+
+
+-- Add a label for information
+folder:AddLabel({
+    text = "Fryzer Hub",
+    type = "label"
+})
+
+-- Initialize and show the GUI
+library:Init()
